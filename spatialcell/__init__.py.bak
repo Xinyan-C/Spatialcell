@@ -6,7 +6,7 @@ Email: keepandon@gmail.com
 GitHub: https://github.com/Xinyan-C/Spatialcell
 """
 
-__version__ = "1.0.4"
+__version__ = "1.0.3"
 __author__ = "Xinyan"
 __email__ = "keepandon@gmail.com"
 

@@ -34,10 +34,11 @@ from datetime import datetime
 # Add module paths
 sys.path.append(str(Path(__file__).parent.parent))
 
-from utils import extract_roi_coordinates, convert_svg_to_npz
-from spatial_segmentation import process_spatial_data
-from cell_annotation import process_sample_annotation
-from workflows.pipeline_config import PipelineConfig, validate_pipeline_inputs
+from ..utils.roi_extractor import extract_roi_coordinates
+from ..preprocessing.svg_to_npz import convert_svg_to_npz
+from ..spatial_segmentation.spatial_processor import process_spatial_data
+from ..cell_annotation.annotation_processor import process_sample_annotation
+from .pipeline_config import PipelineConfig, validate_pipeline_inputs
 
 
 def setup_pipeline_logging(output_dir: str, sample_name: str) -> None:

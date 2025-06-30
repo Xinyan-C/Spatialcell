@@ -425,6 +425,23 @@ def validate_color_scheme(colors: Dict[str, str]) -> bool:
     logging.info(f"Color scheme validation passed for {len(colors)} cell types")
     return True
 
+def get_color_scheme(scheme_name="default"):
+    """Get color scheme for visualizations (simplified interface)"""
+    
+    schemes = {
+        "default": [
+            "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+            "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
+        ],
+        "primary": list(PRIMARY_CELL_TYPE_COLORS.values()),
+        "scientific": list(SCIENTIFIC_JOURNAL_SCHEME.values()),
+        "functional": list(FUNCTIONAL_GROUPING_SCHEME.values()),
+        "modern": list(MODERN_GRADIENT_SCHEME.values()),
+        "warm": list(WARM_TONE_SCHEME.values()),
+        "golden": list(GOLDEN_RATIO_SCHEME.values())
+    }
+    
+    return schemes.get(scheme_name, schemes["default"])
 
 # =============================================================================
 # Backward Compatibility Aliases
@@ -446,6 +463,7 @@ __all__ = [
     'AVAILABLE_SCHEMES',
     'EXTENDED_COLOR_PALETTE',
     'get_cell_type_colors',
+	'get_color_scheme', 
     'get_color_families', 
     'list_available_schemes',
     'get_scheme_description',

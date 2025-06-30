@@ -29,14 +29,14 @@ import warnings
 
 # Handle custom modules with fallback
 try:
-    from utils.color_schemes import get_cell_type_colors
+    from ..utils.color_schemes import get_cell_type_colors
     XINYAN_PALETTE_AVAILABLE = True
 except ImportError:
     XINYAN_PALETTE_AVAILABLE = False
     warnings.warn("Color schemes module not found. Using matplotlib default colors.")
 
 try:
-    import rename_utils  # Cell type renaming utilities
+    from ..utils import rename_utils  # Cell type renaming utilities
     RENAME_UTILS_AVAILABLE = True
 except ImportError:
     RENAME_UTILS_AVAILABLE = False

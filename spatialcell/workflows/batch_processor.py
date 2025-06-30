@@ -27,8 +27,8 @@ import time
 # Add module paths
 sys.path.append(str(Path(__file__).parent.parent))
 
-from workflows.pipeline_config import PipelineConfig, validate_pipeline_inputs
-from workflows.complete_pipeline import run_complete_pipeline
+from .pipeline_config import PipelineConfig, validate_pipeline_inputs
+from .complete_pipeline import run_complete_pipeline
 
 
 def setup_batch_logging(output_dir: str) -> None:

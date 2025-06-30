@@ -32,7 +32,7 @@ import warnings
 
 # Import enhanced spatial analysis from utils module
 try:
-    from utils.spatial_analysis import EnhancedCountGrid as spatial_CountGrid
+    from ..utils.spatial_analysis import EnhancedCountGrid as spatial_CountGrid
     SPATIAL_AVAILABLE = True
 except ImportError:
     SPATIAL_AVAILABLE = False
