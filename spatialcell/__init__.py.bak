@@ -6,7 +6,7 @@ Email: keepandon@gmail.com
 GitHub: https://github.com/Xinyan-C/Spatialcell
 """
 
-__version__ = "1.0.3"
+__version__ = "1.0.5"
 __author__ = "Xinyan"
 __email__ = "keepandon@gmail.com"
 
@@ -104,6 +104,7 @@ def info():
         print("For complete functionality, install TopAct:")
         print("  pip install git+https://gitlab.com/kfbenjamin/topact.git")
         print("  Official: https://gitlab.com/kfbenjamin/topact")
+		print("  Note: TopACT is licensed under GPL v3")
 
 
 # Show guidance message on import if topact is missing

@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spatialcell"
-version = "1.0.3"
+version = "1.0.5"
 authors = [
     {name = "Xinyan", email = "keepandon@gmail.com"},
 ]
 description = "Integrated pipeline for spatial transcriptomics cell segmentation and annotation using QuPath, Bin2cell, and TopAct"
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",

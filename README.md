@@ -149,7 +149,22 @@ If you use SpatialCell in your research, please cite:
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+SpatialCell is licensed under the Apache License 2.0, which provides patent protection.
+
+### Dependency Licenses:
+- **bin2cell**: MIT License (automatically installed)
+- **TopACT**: GPL v3 License (optional, user installs separately)
+
+Apache 2.0 license includes patent protection clauses, providing additional legal protection for users.
+
+## 📋 Patent Protection
+
+The Apache 2.0 license provides:
+- Patent grants from all contributors
+- Patent retaliation protection
+- Commercial use protection
+
+For full license text, see [LICENSE](LICENSE) file.
 
 ## 🙏 Acknowledgments
 
