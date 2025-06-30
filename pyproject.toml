@@ -1,22 +1,21 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "spatialcell"
-dynamic = ["version"]
+version = "1.0.0"
 authors = [
     {name = "Xinyan", email = "keepandon@gmail.com"},
 ]
 description = "Integrated pipeline for spatial transcriptomics cell segmentation and annotation using QuPath, Bin2cell, and TopAct"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -76,15 +75,9 @@ Repository = "https://github.com/Xinyan-C/Spatialcell"
 [project.scripts]
 spatialcell = "spatialcell.workflows.main:main"
 
-[tool.setuptools]
-packages = ["spatialcell", "spatialcell.qupath_scripts", "spatialcell.preprocessing", "spatialcell.spatial_segmentation", "spatialcell.cell_annotation", "spatialcell.utils", "spatialcell.workflows"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["spatialcell*"]
 
 [tool.setuptools.package-data]
-spatialcell = [
-    "qupath_scripts/*.groovy",
-    "examples/*.py",
-    "examples/*.yml",
-]
-
-[tool.setuptools_scm]
-write_to = "spatialcell/_version.py"
+"spatialcell.qupath_scripts" = ["*.groovy"]
