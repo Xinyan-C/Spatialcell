@@ -175,9 +175,10 @@ The Apache 2.0 license provides:
 
 For full license text, see [LICENSE](LICENSE) file.
 
-## 🙏 Acknowledgments
+## 🔗 Reference
 
-- **QuPath**: For excellent histological image analysis tools
-- **Bin2cell**: For spatial cell segmentation methods
-- **TopAct**: For machine learning-based cell classification
-- **Scanpy**: For single-cell analysis infrastructure
+- **QuPath**: Bankhead P, Loughrey MB, Fernández JA, et al. QuPath: Open source software for digital pathology image analysis. Sci Rep. 2017;7(1):16878. doi:10.1038/s41598-017-17204-5
+- **Stardist**: Schmidt U, Weigert M, Broaddus C, Myers G. Cell detection with star-convex polygons. In: Frangi AF, Schnabel JA, Davatzikos C, Alberola-López C, Fichtinger G, eds. Medical Image Computing and Computer Assisted Intervention – MICCAI 2018. Springer International Publishing; 2018:265-273. doi:10.1007/978-3-030-00934-2_30
+- **Bin2cell**: Polański K, Bartolomé-Casado R, Sarropoulos I, et al. Bin2cell reconstructs cells from high resolution visium HD data. Bioinformatics. 2024;40(9):btae546. doi:10.1093/bioinformatics/btae546
+- **TopAct**: Benjamin K, Bhandari A, Kepple JD, et al. Multiscale topology classifies cells in subcellular spatial transcriptomics. Nature. 2024;630(8018):943-949. doi:10.1038/s41586-024-07563-1
+- **Scanpy**: Wolf FA, Angerer P, Theis FJ. SCANPY: large-scale single-cell gene expression data analysis. Genome Biology. 2018;19(1):15. doi:10.1186/s13059-017-1382-0
