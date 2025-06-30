@@ -1,0 +1,48 @@
+# SpatialCell Analysis Configuration Example
+# Copy this file and modify paths for your analysis
+
+# Sample Information
+sample_info:
+  name: "E18.5"  # E14.5, E18.5, or P3
+  description: "Embryonic day 18.5 sample analysis"
+
+# Input Data Paths
+input_paths:
+  visium_dir: "/path/to/visium/data"
+  source_image: "/path/to/histology.tif" 
+  roi_file: "/path/to/E18.5_ranges.txt"
+  hd_expression: "/path/to/filtered_feature_bc_matrix"
+  hd_positions: "/path/to/tissue_positions.parquet"
+
+# Output Directory
+output_dir: "/path/to/output"
+
+# Processing Parameters
+segmentation:
+  algorithm: "max_bin_distance"  # or "volume_ratio"
+  max_bin_distance: 2
+  volume_ratio: 4.0
+  k: 4
+  subset_pca: true
+
+classification:
+  classifier_dir: "/path/to/classifiers"
+  labels_column: "labels_qupath_expanded"
+  min_scale: 3.0  # μm
+  max_scale: 9.0  # μm
+  num_processes: 80
+
+visualization:
+  point_size: 10
+  point_shape: "s"
+  color_scheme: "xinyan"
+  rename_cell_types: false
+  generate_overlay: true
+  generate_side_by_side: true
+
+# Advanced Options
+advanced:
+  threads: "80"
+  memory_gb: 600
+  prob_thresh: 0.05
+  nms_thresh: 0.5

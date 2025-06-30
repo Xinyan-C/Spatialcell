@@ -205,3 +205,71 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ================================
+# SpatialCell Project Specific
+# ================================
+
+# Large biological data files
+*.h5ad
+*.h5
+*.hdf5
+*.mtx
+*.npz
+*.tiff
+*.tif
+*.svs
+*.ndpi
+
+# Spatial transcriptomics data
+*/filtered_feature_bc_matrix/
+*/raw_feature_bc_matrix/
+*/spatial/
+tissue_positions*.csv
+tissue_positions*.parquet
+scalefactors*.json
+
+# Analysis output directories
+output/
+results/
+stardist/
+destripe/
+segmentation/
+gex_labels/
+joint_labels*/
+render_*/
+expanded_labels/
+npz_labels/
+ROI_Data/
+
+# Intermediate processing files
+*.svg
+*.joblib
+*.pkl
+*.pickle
+spatial_data_*.joblib
+sd_*.joblib
+outfile_*.npy
+
+# Analysis logs
+*TopAct*.log
+*Bin2cell*.log
+processing.log
+
+# QuPath projects
+*.qpproj
+*.qpdata/
+
+# Trained models and classifiers
+clf_*.joblib
+*.pb
+*.model
+
+# ROI and region files
+*_ranges.txt
+
+# Temporary analysis files
+tmp/
+temp/
+.tmp/
+*.tmp
