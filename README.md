@@ -18,11 +18,23 @@
 ## 🔧 Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.8 or higher (3.10 recommended)
 - QuPath (for image analysis)
 - Git
 
-### Quick Install
+
+### Quick Install (Recommended)
+
+```bash
+pip install spatialcell
+```
+### Complete Functionality
+```bash
+pip install spatialcell
+pip install git+https://gitlab.com/kfbenjamin/topact.git
+```
+### Alternative: Install from Source
+
 ```bash
 # Clone the repository
 git clone https://github.com/Xinyan-C/Spatialcell.git
@@ -35,10 +47,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### Alternative: Install from PyPI (Coming Soon)
-```bash
-pip install spatialcell
-```
+
 
 ## 📖 Quick Start
 
