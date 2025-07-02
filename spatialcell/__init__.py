@@ -111,4 +111,4 @@ def info():
 if not _topact_available:
     print("SpatialCell: TopAct not found. For complete cell annotation functionality, run:")
     print("pip install git+https://gitlab.com/kfbenjamin/topact.git")
-    print("Official repository: https://gitlab.com/kfbenjamin/topact")
+    print("Official repository: https://gitlab.com/kfbenjamin/topact")# Version: 1.0.7

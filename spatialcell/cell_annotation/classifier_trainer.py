@@ -387,4 +387,4 @@ Input directory should contain:
 
 
 if __name__ == "__main__":
-    exit(main())
+    exit(main())# Version: 1.0.7

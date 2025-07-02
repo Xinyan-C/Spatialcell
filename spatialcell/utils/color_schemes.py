@@ -489,4 +489,4 @@ if __name__ == "__main__":
     for cell_type, color in colors.items():
         print(f"  {cell_type}: {color}")
     
-    print(f"\nValidation result: {validate_color_scheme(colors)}")
+    print(f"\nValidation result: {validate_color_scheme(colors)}")# Version: 1.0.7

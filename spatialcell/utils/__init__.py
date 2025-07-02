@@ -41,4 +41,4 @@ __all__ = [
     'get_cell_type_colors', 'get_color_families', 'list_available_schemes',
     'get_scheme_description', 'validate_color_scheme', 'PRIMARY_CELL_TYPE_COLORS',
     'AVAILABLE_SCHEMES'
-]
+]# Version: 1.0.7

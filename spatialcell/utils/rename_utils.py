@@ -327,3 +327,4 @@ if __name__ == "__main__":
     # Example 3: Name standardization
     standardized = standardize_names(["B cells", "Osteoblasts"])
     print(f"Example 3: {standardized}")
+# Version: 1.0.7

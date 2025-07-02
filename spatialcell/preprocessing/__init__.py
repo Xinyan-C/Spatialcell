@@ -15,4 +15,4 @@ __all__ = [
     'convert_svg_to_npz',
     'svg_to_label_matrix', 
     'parse_path_d'
-]
+]# Version: 1.0.7

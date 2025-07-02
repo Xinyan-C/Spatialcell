@@ -649,4 +649,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.info("Enhanced Spatial Analysis Module for Spatialcell Pipeline")
     logging.info(f"Version: {__version__}")
-    logging.info("Built upon TopAct framework with float coordinate support")
+    logging.info("Built upon TopAct framework with float coordinate support")# Version: 1.0.7

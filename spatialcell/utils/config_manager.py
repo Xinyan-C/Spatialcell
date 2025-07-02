@@ -23,3 +23,4 @@ def validate_config(config):
             raise ValueError(f"Missing required config key: {key}")
     
     return True
+# Version: 1.0.7

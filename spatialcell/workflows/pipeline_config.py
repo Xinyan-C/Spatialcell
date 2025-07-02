@@ -524,4 +524,4 @@ if __name__ == "__main__":
         validate_pipeline_inputs(example_config)
         print("Configuration validation: PASSED")
     except ValueError as e:
-        print(f"Configuration validation: FAILED - {e}")
+        print(f"Configuration validation: FAILED - {e}")# Version: 1.0.7
