@@ -4,11 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues](https://img.shields.io/github/issues/Xinyan-C/Spatialcell)](https://github.com/Xinyan-C/Spatialcell/issues)
 
-**SpatialCell** is an integrated computational pipeline for spatial transcriptomics analysis that combines cell segmentation and automated cell type annotation. It seamlessly integrates **QuPath** for histological image analysis, **Bin2cell** for spatial cell segmentation, and **TopAct** for machine learning-based cell classification.
+**SpatialCell** is an integrated computational pipeline for spatial transcriptomics analysis that combines cell segmentation and automated cell type annotation. It seamlessly integrates **Stardist (applied as QuPath plugin for cell detection)** for histological image analysis, **Bin2cell** for spatial cell segmentation, and **TopAct** for machine learning-based cell classification.
 
 ## 🚀 Key Features
 
-- **Multi-scale Cell Segmentation**: QuPath + Bin2cell integration for accurate cell boundary detection
+- **Multi-scale Cell Segmentation**: Stardist-enabled QuPath cell detection with Bin2cell spatial segmentation
 - **Automated Cell Annotation**: TopAct-based machine learning classification
 - **ROI-aware Processing**: Region-of-interest focused analysis for large datasets
 - **Scalable Pipeline**: Support for multiple developmental time points (E14.5, E18.5, P3)
@@ -68,7 +68,7 @@ pipeline.run_full_analysis()
 
 ### 2. Step-by-Step Processing
 ```python
-# Cell segmentation with Bin2cell
+# Cell detection and spatial segmentation
 pipeline.run_segmentation(
     source_image_path="/path/to/histology.tif",
     roi_file="/path/to/regions.txt"
@@ -88,7 +88,7 @@ pipeline.create_visualizations()
 ```
 Spatialcell/
 ├── spatialcell/                    # Main package
-│   ├── qupath_scripts/             # QuPath cell detection scripts
+│   ├── qupath_scripts/             # QuPath-Stardist integration scripts
 │   ├── preprocessing/              # Data preprocessing modules
 │   ├── spatial_segmentation/       # Bin2cell integration
 │   ├── cell_annotation/            # TopAct classification
@@ -109,7 +109,7 @@ Spatialcell/
 
 ## 🔬 Workflow Overview
 
-1. **Histological Analysis**: QuPath-based nucleus detection
+1. **Histological Analysis**: Stardist-based cell detection via QuPath
 2. **Data Preprocessing**: SVG to NPZ conversion and filtering  
 3. **Spatial Segmentation**: Bin2cell integration with cell boundaries
 4. **Cell Classification**: TopAct machine learning annotation
