@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 """
 Spatial Processing Module for Spatialcell Pipeline
-
 This module integrates bin2cell functionality for comprehensive spatial transcriptomics analysis,
 including cell segmentation, label expansion, and spatial visualization.
-
 Built upon the bin2cell package: https://github.com/BayraktarLab/bin2cell
-
 Author: Xinyan
-License: MIT
+License: Apache 2.0
+Modified: 修复路径处理问题，确保所有输出都保存到指定的output_dir
 """
-
 import os
 import argparse
 import logging
@@ -24,7 +21,6 @@ import bin2cell as b2c
 from scipy.sparse import load_npz
 import numpy as np
 from pathlib import Path
-
 
 def setup_logging(output_dir):
     """
@@ -42,7 +38,6 @@ def setup_logging(output_dir):
             logging.StreamHandler()
         ]
     )
-
 
 def read_regions(region_file):
     """
@@ -93,7 +88,6 @@ def read_regions(region_file):
     logging.info(f"Found {len(regions)} regions.")
     return regions
 
-
 def destripe_and_save_regions(adata, region_file, save_dir, mpp):
     """
     Visualize and save destripe results for each region.
@@ -108,7 +102,7 @@ def destripe_and_save_regions(adata, region_file, save_dir, mpp):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -118,7 +112,7 @@ def destripe_and_save_regions(adata, region_file, save_dir, mpp):
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         titles = [
             f"{region_name} - Image",
             f"{region_name} - Raw Counts",
@@ -141,7 +135,6 @@ def destripe_and_save_regions(adata, region_file, save_dir, mpp):
         plt.close()
         logging.info(f"Saved: {save_path}")
 
-
 def visualize_labels_in_regions(npz_path, region_file, save_dir):
     """
     Visualize labels from NPZ file for each region.
@@ -161,20 +154,19 @@ def visualize_labels_in_regions(npz_path, region_file, save_dir):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         row_min, row_max = int(region_coords["row_min"]), int(region_coords["row_max"])
         col_min, col_max = int(region_coords["col_min"]), int(region_coords["col_max"])
         cropped_labels = labels_matrix[row_min:row_max, col_min:col_max]
         
         logging.info(f"{region_name} - Cropped labels matrix shape: {cropped_labels.shape}")
-
         masked_labels = np.ma.masked_where(cropped_labels == 1, cropped_labels)
         unique_labels = np.unique(cropped_labels[cropped_labels != 1])
         colors = [cc.glasbey[i % len(cc.glasbey)] for i in range(len(unique_labels))]
         cmap = mcolors.ListedColormap(colors)
         cmap.set_bad('white')
-
+        
         plt.imshow(masked_labels, cmap=cmap, interpolation='none')
         plt.colorbar()
         plt.title(f"Labels in {region_name}")
@@ -183,7 +175,6 @@ def visualize_labels_in_regions(npz_path, region_file, save_dir):
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def visualize_after_insert_labels(adata, region_file, save_dir, mpp):
     """
@@ -199,7 +190,7 @@ def visualize_after_insert_labels(adata, region_file, save_dir, mpp):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -209,15 +200,16 @@ def visualize_after_insert_labels(adata, region_file, save_dir, mpp):
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_qupath'] > 0]
         bdata.obs['labels_qupath'] = bdata.obs['labels_qupath'].astype(int)
         unique_labels = sorted(bdata.obs['labels_qupath'].unique())
         bdata.obs['labels_qupath'] = pd.Categorical(
             bdata.obs['labels_qupath'], categories=unique_labels, ordered=True)
+        
         colors = [cc.glasbey[i % len(cc.glasbey)] for i in range(len(unique_labels))]
         bdata.uns['labels_qupath_colors'] = colors
-
+        
         titles = [f"{region_name} - Image", f"{region_name} - Labels QuPath"]
         fig = sc.pl.spatial(
             bdata,
@@ -238,13 +230,12 @@ def visualize_after_insert_labels(adata, region_file, save_dir, mpp):
                           markerfacecolor=c, markersize=10) for c in colors_source]
         ax.legend(handles, labels_source, loc='center left',
                   bbox_to_anchor=(2, 0.5), ncol=15, fontsize=8)
-
+        
         save_path = os.path.join(save_dir, f"{region_name}_{basename}.pdf")
         plt.tight_layout()
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def render_labels_after_insert(adata, region_file, save_dir, npz_path, mpp, source_image_path):
     """
@@ -262,7 +253,7 @@ def render_labels_after_insert(adata, region_file, save_dir, npz_path, mpp, sour
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -272,12 +263,13 @@ def render_labels_after_insert(adata, region_file, save_dir, npz_path, mpp, sour
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_qupath'] > 0]
         bdata.obs['labels_qupath'] = bdata.obs['labels_qupath'].astype(str)
+        
         crop = b2c.get_crop(bdata, basis="spatial", spatial_key="spatial", mpp=mpp)
         rendered = b2c.view_labels(image_path=source_image_path, labels_npz_path=npz_path, crop=crop)
-
+        
         plt.figure()
         plt.imshow(rendered)
         plt.axis("off")
@@ -286,7 +278,6 @@ def render_labels_after_insert(adata, region_file, save_dir, npz_path, mpp, sour
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def visualize_after_expansion(adata, region_file, save_dir, mpp):
     """
@@ -302,7 +293,7 @@ def visualize_after_expansion(adata, region_file, save_dir, mpp):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -312,15 +303,16 @@ def visualize_after_expansion(adata, region_file, save_dir, mpp):
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_qupath_expanded'] > 0]
         bdata.obs['labels_qupath_expanded'] = bdata.obs['labels_qupath_expanded'].astype(int)
         unique_labels = sorted(bdata.obs['labels_qupath_expanded'].unique())
         bdata.obs['labels_qupath_expanded'] = pd.Categorical(
             bdata.obs['labels_qupath_expanded'], categories=unique_labels, ordered=True)
+        
         colors = [cc.glasbey[i % len(cc.glasbey)] for i in range(len(unique_labels))]
         bdata.uns['labels_qupath_expanded_colors'] = colors
-
+        
         titles = [f"{region_name} - Image", f"{region_name} - Expanded Labels"]
         fig = sc.pl.spatial(
             bdata,
@@ -341,13 +333,12 @@ def visualize_after_expansion(adata, region_file, save_dir, mpp):
                           markerfacecolor=c, markersize=10) for c in colors_source]
         ax.legend(handles, labels_source, loc='center left',
                   bbox_to_anchor=(2, 0.5), ncol=15, fontsize=8)
-
+        
         save_path = os.path.join(save_dir, f"{region_name}_{basename}.pdf")
         plt.tight_layout()
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def visualize_gex_labels(adata, region_file, save_dir, mpp):
     """
@@ -363,7 +354,7 @@ def visualize_gex_labels(adata, region_file, save_dir, mpp):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -373,15 +364,16 @@ def visualize_gex_labels(adata, region_file, save_dir, mpp):
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_gex'] > 0]
         bdata.obs['labels_gex'] = bdata.obs['labels_gex'].astype(int)
         unique_labels = sorted(bdata.obs['labels_gex'].unique())
         bdata.obs['labels_gex'] = pd.Categorical(
             bdata.obs['labels_gex'], categories=unique_labels, ordered=True)
+        
         colors = [cc.glasbey[i % len(cc.glasbey)] for i in range(len(unique_labels))]
         bdata.uns['labels_gex_colors'] = colors
-
+        
         titles = [f"{region_name} - Image", f"{region_name} - GEX Labels"]
         fig = sc.pl.spatial(
             bdata,
@@ -402,15 +394,14 @@ def visualize_gex_labels(adata, region_file, save_dir, mpp):
                           markerfacecolor=c, markersize=10) for c in colors_source]
         ax.legend(handles, labels_source, loc='center left',
                   bbox_to_anchor=(2, 0.5), ncol=15, fontsize=8)
-
+        
         save_path = os.path.join(save_dir, f"{region_name}_{basename}.pdf")
         plt.tight_layout()
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
 
-
-def render_gex_labels(adata, region_file, save_dir, prob_thresh, nms_thresh, mpp):
+def render_gex_labels(adata, region_file, save_dir, prob_thresh, nms_thresh, mpp, stardist_dir):
     """
     Render GEX labels for each region.
     
@@ -421,12 +412,13 @@ def render_gex_labels(adata, region_file, save_dir, prob_thresh, nms_thresh, mpp
         prob_thresh (float): Probability threshold for StarDist
         nms_thresh (float): NMS threshold for StarDist
         mpp (float): Microns per pixel
+        stardist_dir (str): Directory containing StarDist files
     """
     logging.info(f"Rendering GEX labels in {save_dir}...")
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -436,16 +428,17 @@ def render_gex_labels(adata, region_file, save_dir, prob_thresh, nms_thresh, mpp
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_gex'] > 0]
         bdata.obs['labels_gex'] = bdata.obs['labels_gex'].astype(str)
+        
         crop = b2c.get_crop(bdata, basis="array", mpp=mpp)
         rendered = b2c.view_labels(
-            image_path="stardist/gex.tiff",
-            labels_npz_path=f"stardist/gex_{prob_thresh}_{nms_thresh}.npz",
+            image_path=os.path.join(stardist_dir, "gex.tiff"),
+            labels_npz_path=os.path.join(stardist_dir, f"gex_{prob_thresh}_{nms_thresh}.npz"),
             crop=crop
         )
-
+        
         plt.figure()
         plt.imshow(rendered)
         plt.axis("off")
@@ -454,7 +447,6 @@ def render_gex_labels(adata, region_file, save_dir, prob_thresh, nms_thresh, mpp
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def visualize_joint_labels(adata, region_file, save_dir, mpp):
     """
@@ -470,7 +462,7 @@ def visualize_joint_labels(adata, region_file, save_dir, mpp):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         mask = (
             (adata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -480,15 +472,16 @@ def visualize_joint_labels(adata, region_file, save_dir, mpp):
         )
         bdata = adata[mask]
         logging.info(f"{region_name} - Number of spots selected: {bdata.n_obs}")
-
+        
         bdata = bdata[bdata.obs['labels_joint'] > 0]
         bdata.obs['labels_joint'] = bdata.obs['labels_joint'].astype(int)
         unique_labels_joint = sorted(bdata.obs['labels_joint'].unique())
         bdata.obs['labels_joint'] = pd.Categorical(
             bdata.obs['labels_joint'], categories=unique_labels_joint, ordered=True)
+        
         colors_joint = [cc.glasbey[i % len(cc.glasbey)] for i in range(len(unique_labels_joint))]
         bdata.uns['labels_joint_colors'] = colors_joint
-
+        
         if 'labels_joint_source' in bdata.obs.columns:
             unique_labels_source = sorted(bdata.obs['labels_joint_source'].unique())
             bdata.obs['labels_joint_source'] = pd.Categorical(
@@ -498,7 +491,7 @@ def visualize_joint_labels(adata, region_file, save_dir, mpp):
         else:
             logging.error("Column 'labels_joint_source' not found in bdata.obs")
             raise ValueError("Column 'labels_joint_source' not found")
-
+        
         titles = [f"{region_name} - Image", f"{region_name} - Joint Source", f"{region_name} - Joint Labels"]
         fig = sc.pl.spatial(
             bdata,
@@ -519,7 +512,7 @@ def visualize_joint_labels(adata, region_file, save_dir, mpp):
                                  markerfacecolor=c, markersize=10) for c in colors_source]
         ax_source.legend(handles_source, labels_source, loc='center left',
                          bbox_to_anchor=(2, 0.5), ncol=1, fontsize=8)
-
+        
         ax_joint = axes[2]
         labels_joint = bdata.obs['labels_joint'].cat.categories
         colors_joint = bdata.uns['labels_joint_colors']
@@ -527,13 +520,12 @@ def visualize_joint_labels(adata, region_file, save_dir, mpp):
                                 markerfacecolor=c, markersize=10) for c in colors_joint]
         ax_joint.legend(handles_joint, labels_joint, loc='center left',
                         bbox_to_anchor=(3, 0.5), ncol=15, fontsize=8)
-
+        
         save_path = os.path.join(save_dir, f"{region_name}_{basename}.pdf")
         plt.tight_layout()
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
-
 
 def visualize_joint_all(cdata, region_file, save_dir, mpp, labels_key):
     """
@@ -550,7 +542,7 @@ def visualize_joint_all(cdata, region_file, save_dir, mpp, labels_key):
     regions = read_regions(region_file)
     os.makedirs(save_dir, exist_ok=True)
     basename = os.path.basename(save_dir.rstrip(os.sep))
-
+    
     for region_name, region_coords in regions.items():
         spatial_coords = cdata.obsm['spatial']
         mask = (
@@ -561,7 +553,7 @@ def visualize_joint_all(cdata, region_file, save_dir, mpp, labels_key):
         )
         ddata = cdata[mask]
         logging.info(f"{region_name} - Number of spots selected: {ddata.n_obs}")
-
+        
         titles = [f"{region_name} - Bin Count", f"{region_name} - Joint Source"]
         
         # Conditional color assignment based on labels_key
@@ -580,18 +572,15 @@ def visualize_joint_all(cdata, region_file, save_dir, mpp, labels_key):
             size=0.5,
             show=False
         )
-
         save_path = os.path.join(save_dir, f"{region_name}_{basename}.pdf")
         plt.tight_layout()
         plt.savefig(save_path, dpi=1200, bbox_inches="tight", pad_inches=0.5)
         plt.close()
         logging.info(f"Saved: {save_path}")
 
-
 def generate_roi_data(adata, cdata, region_file, output_dir):
     """
     Generate separate adata and cdata files for each ROI based on spatial coordinates.
-
     Args:
         adata: AnnData object containing spot-level data with spatial coordinates
         cdata: AnnData object containing cell-level data with spatial coordinates  
@@ -600,7 +589,7 @@ def generate_roi_data(adata, cdata, region_file, output_dir):
     """
     regions = read_regions(region_file)
     logging.info(f"Generating ROI-specific adata and cdata for {len(regions)} regions...")
-
+    
     for region_name, region_coords in regions.items():
         # Filter adata spots
         mask_adata = (
@@ -611,7 +600,7 @@ def generate_roi_data(adata, cdata, region_file, output_dir):
         )
         adata_roi = adata[mask_adata].copy()
         logging.info(f"{region_name} - Number of spots in adata: {adata_roi.n_obs}")
-
+        
         # Filter cdata cells
         mask_cdata = (
             (cdata.obsm['spatial'][:, 0] >= region_coords["col_min"]) &
@@ -621,20 +610,20 @@ def generate_roi_data(adata, cdata, region_file, output_dir):
         )
         cdata_roi = cdata[mask_cdata].copy()
         logging.info(f"{region_name} - Number of cells in cdata: {cdata_roi.n_obs}")
-
+        
         # Create save directory
         save_dir = os.path.join(output_dir, "ROI_Data", region_name)
         os.makedirs(save_dir, exist_ok=True)
-
+        
         # Save new adata and cdata files
         adata_roi.write_h5ad(os.path.join(save_dir, f"{region_name}_adata.h5ad"))
         cdata_roi.write_h5ad(os.path.join(save_dir, f"{region_name}_cdata.h5ad"))
         logging.info(f"Saved ROI {region_name} data to {save_dir}")
 
-
 def process_spatial_data(args):
     """
     Main processing function for spatial transcriptomics data.
+    修复版本：确保所有输出都保存到指定的output_dir
     
     Args:
         args: Command line arguments
@@ -642,9 +631,15 @@ def process_spatial_data(args):
     Returns:
         tuple: (adata, cdata) - processed AnnData objects
     """
+    # 确保输出目录存在并设置日志
+    os.makedirs(args.output_dir, exist_ok=True)
     setup_logging(args.output_dir)
     logging.info("Starting spatial transcriptomics processing with bin2cell integration...")
-
+    
+    # 创建stardist目录
+    stardist_dir = os.path.join(args.output_dir, "stardist")
+    os.makedirs(stardist_dir, exist_ok=True)
+    
     # Load and filter data using bin2cell
     adata = b2c.read_visium(args.path, source_image_path=args.source_image_path)
     adata.var_names_make_unique()
@@ -653,39 +648,44 @@ def process_spatial_data(args):
     sc.pp.filter_genes(adata, min_cells=3)
     sc.pp.filter_cells(adata, min_counts=1)
     logging.info(f"After filtering: {adata.n_obs} observations, {adata.n_vars} variables")
-
+    
     # Get microns per pixel (MPP)
     library = list(adata.uns['spatial'].keys())[0]
     mpp = adata.uns['spatial'][library]['scalefactors']['microns_per_pixel']
     logging.info(f"MPP (microns per pixel): {mpp}")
-
-    # Process HE image using bin2cell
-    os.makedirs("stardist", exist_ok=True)
-    b2c.scaled_he_image(adata, mpp=mpp, save_path="stardist/he.tiff")
-    logging.info("Scaled HE image saved to stardist/he.tiff")
-
+    
+    # Process HE image using bin2cell - 使用完整路径
+    he_image_path = os.path.join(stardist_dir, "he.tiff")
+    b2c.scaled_he_image(adata, mpp=mpp, save_path=he_image_path)
+    logging.info(f"Scaled HE image saved to {he_image_path}")
+    
     # Execute destriping using bin2cell
     b2c.destripe(adata, adjust_counts=True)
     logging.info("Destriping completed")
-
-    # Visualize destripe results
-    destripe_and_save_regions(adata, args.region_file, "destripe", mpp)
-
-    # Visualize NPZ labels
-    visualize_labels_in_regions(args.npz_path, args.region_file, "npz_labels")
-
+    
+    # Visualize destripe results - 使用完整路径
+    destripe_dir = os.path.join(args.output_dir, "destripe")
+    destripe_and_save_regions(adata, args.region_file, destripe_dir, mpp)
+    
+    # Visualize NPZ labels - 使用完整路径
+    npz_labels_dir = os.path.join(args.output_dir, "npz_labels")
+    visualize_labels_in_regions(args.npz_path, args.region_file, npz_labels_dir)
+    
     # Insert QuPath labels using bin2cell
     b2c.insert_labels(adata, labels_npz_path=args.npz_path, basis="spatial",
                       spatial_key="spatial", mpp=mpp, labels_key="labels_qupath")
     adata.obs["labels_qupath"] = adata.obs["labels_qupath"].apply(
         lambda x: 0 if x == 1 else x - 1)
     logging.info(f"Inserted and adjusted QuPath labels: {adata.obs['labels_qupath'].unique()}")
-
-    # Visualize and render QuPath labels
-    visualize_after_insert_labels(adata, args.region_file, "segmentation", mpp)
-    render_labels_after_insert(adata, args.region_file, "render_labels", 
+    
+    # Visualize and render QuPath labels - 使用完整路径
+    segmentation_dir = os.path.join(args.output_dir, "segmentation")
+    visualize_after_insert_labels(adata, args.region_file, segmentation_dir, mpp)
+    
+    render_labels_dir = os.path.join(args.output_dir, "render_labels")
+    render_labels_after_insert(adata, args.region_file, render_labels_dir, 
                               args.npz_path, mpp, args.source_image_path)
-
+    
     # Expand QuPath labels using bin2cell
     b2c.expand_labels(
         adata,
@@ -698,44 +698,53 @@ def process_spatial_data(args):
         subset_pca=args.subset_pca
     )
     logging.info("QuPath labels expanded")
-    visualize_after_expansion(adata, args.region_file, "expanded_labels", mpp)
-
-    # Generate GEX grid image using bin2cell
+    
+    expanded_labels_dir = os.path.join(args.output_dir, "expanded_labels")
+    visualize_after_expansion(adata, args.region_file, expanded_labels_dir, mpp)
+    
+    # Generate GEX grid image using bin2cell - 使用完整路径
+    gex_image_path = os.path.join(stardist_dir, "gex.tiff")
     b2c.grid_image(adata, "n_counts_adjusted", mpp=mpp,
-                   sigma=5, save_path="stardist/gex.tiff")
-    logging.info("GEX grid image generated")
-
-    # Run StarDist using bin2cell
+                   sigma=5, save_path=gex_image_path)
+    logging.info(f"GEX grid image generated at {gex_image_path}")
+    
+    # Run StarDist using bin2cell - 使用完整路径
+    gex_npz_path = os.path.join(stardist_dir, f"gex_{args.prob_thresh}_{args.nms_thresh}.npz")
     b2c.stardist(
-        image_path="stardist/gex.tiff",
-        labels_npz_path=f"stardist/gex_{args.prob_thresh}_{args.nms_thresh}.npz",
+        image_path=gex_image_path,
+        labels_npz_path=gex_npz_path,
         stardist_model="2D_versatile_fluo",
         prob_thresh=args.prob_thresh,
         nms_thresh=args.nms_thresh
     )
     logging.info("StarDist segmentation completed")
-
+    
     # Insert GEX labels using bin2cell
     b2c.insert_labels(
         adata, 
-        labels_npz_path=f"stardist/gex_{args.prob_thresh}_{args.nms_thresh}.npz", 
+        labels_npz_path=gex_npz_path, 
         basis="array", 
         mpp=mpp, 
         labels_key="labels_gex"
     )
     logging.info("GEX labels inserted")
-
-    # Visualize and render GEX labels
-    visualize_gex_labels(adata, args.region_file, "gex_labels", mpp)
-    render_gex_labels(adata, args.region_file, "render_gex",
-                      args.prob_thresh, args.nms_thresh, mpp)
-
+    
+    # Visualize and render GEX labels - 使用完整路径
+    gex_labels_dir = os.path.join(args.output_dir, "gex_labels")
+    visualize_gex_labels(adata, args.region_file, gex_labels_dir, mpp)
+    
+    render_gex_dir = os.path.join(args.output_dir, "render_gex")
+    render_gex_labels(adata, args.region_file, render_gex_dir,
+                      args.prob_thresh, args.nms_thresh, mpp, stardist_dir)
+    
     # Merge primary and secondary labels using bin2cell
     b2c.salvage_secondary_labels(adata, primary_label="labels_qupath_expanded",
                                  secondary_label="labels_gex", labels_key="labels_joint")
     logging.info("Salvaged secondary labels into joint labels")
-    visualize_joint_labels(adata, args.region_file, "joint_labels", mpp)
-
+    
+    joint_labels_dir = os.path.join(args.output_dir, "joint_labels")
+    visualize_joint_labels(adata, args.region_file, joint_labels_dir, mpp)
+    
     # Bin to cell conversion using bin2cell
     cdata = b2c.bin_to_cell(adata, labels_key=args.labels_key, 
                            spatial_keys=["spatial", "spatial_cropped_150_buffer"])
@@ -743,8 +752,9 @@ def process_spatial_data(args):
     if args.labels_key != "labels_joint":
         logging.warning("⚠️  Note: HE segmentation optimized, applying 'labels_qupath_expanded'")
     
-    visualize_joint_all(cdata, args.region_file, "joint_labels_all", mpp, args.labels_key)
-
+    joint_labels_all_dir = os.path.join(args.output_dir, "joint_labels_all")
+    visualize_joint_all(cdata, args.region_file, joint_labels_all_dir, mpp, args.labels_key)
+    
     # Save overall results
     save_dir = os.path.join(args.output_dir, "Data")
     os.makedirs(save_dir, exist_ok=True)
@@ -754,10 +764,8 @@ def process_spatial_data(args):
     
     # Generate and save ROI-specific data
     generate_roi_data(adata, cdata, args.region_file, args.output_dir)
-
     logging.info("Spatial processing completed successfully! ✨")
     return adata, cdata
-
 
 def main():
     """Main entry point for spatial processing."""
@@ -769,7 +777,6 @@ Examples:
   python spatial_processor.py --path /data/visium --source_image_path /data/image.tif \\
     --region_file regions.txt --npz_path labels.npz --output_dir results \\
     --sample E14.5
-
   python spatial_processor.py --path /data/visium --source_image_path /data/image.tif \\
     --region_file regions.txt --npz_path labels.npz --output_dir results \\
     --sample P3 --algorithm volume_ratio --volume_ratio 3.0
@@ -789,7 +796,7 @@ Examples:
                         help="Directory to save output files")
     parser.add_argument("--sample", required=True,
                         help="Sample type")
-
+    
     # StarDist parameters
     parser.add_argument("--prob_thresh", type=float, default=0.05,
                         help="Probability threshold for StarDist (default: 0.05)")
@@ -799,7 +806,7 @@ Examples:
     # Labels parameters
     parser.add_argument("--labels_key", default="labels_joint",
                         help="Labels key for bin_to_cell (default: 'labels_joint')")
-
+    
     # Label expansion parameters
     parser.add_argument("--algorithm", default="max_bin_distance", 
                         choices=["max_bin_distance", "volume_ratio"],
@@ -813,12 +820,11 @@ Examples:
     parser.add_argument("--subset_pca", type=str, default="True",
                         choices=["True", "False"],
                         help="Whether to compute PCA only for mean bins (default: 'True')")
-
+    
     args = parser.parse_args()
-
     # Convert subset_pca from string to boolean
     args.subset_pca = args.subset_pca == "True"
-
+    
     try:
         adata, cdata = process_spatial_data(args)
         print("✓ Spatial processing completed successfully!")
@@ -827,6 +833,5 @@ Examples:
         logging.error(f"Processing failed: {e}")
         raise
 
-
 if __name__ == "__main__":
-    main()# Version: 1.0.7
+    main()
