@@ -1,0 +1,40 @@
+# Include documentation and configuration files
+include README.md
+include LICENSE
+include requirements.txt
+include MANIFEST.in
+include *.py
+
+# Include all Python files
+recursive-include spatialcell *.py
+recursive-include spatialcell *.groovy
+
+# Include examples and documentation
+recursive-include examples *.py *.yml *.md
+recursive-include docs *.md *.rst
+
+# Include QuPath scripts
+recursive-include spatialcell/qupath_scripts *.groovy
+
+# Exclude compiled files and caches
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude *.so
+global-exclude *.dylib
+global-exclude *.dll
+
+# Exclude development files
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude *.log
+global-exclude .pytest_cache
+global-exclude .coverage
+
+# Exclude large data files that shouldn't be in the package
+global-exclude *.h5ad
+global-exclude *.tiff
+global-exclude *.tif
+global-exclude *.mtx
+global-exclude *.npz
