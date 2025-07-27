@@ -1,0 +1,162 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatialcell"
+version = "1.1.1"
+authors = [
+    {name = "Xinyan", email = "keepandon@gmail.com"},
+]
+description = "Integrated pipeline for spatial transcriptomics cell segmentation and annotation using QuPath, Bin2cell, and TopAct"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+keywords = [
+    "spatial-transcriptomics",
+    "cell-segmentation", 
+    "cell-annotation",
+    "QuPath",
+    "Bin2cell",
+    "TopAct",
+    "bioinformatics",
+    "single-cell"
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+    "opencv-python>=4.5.0",
+    "Pillow>=8.0.0",
+    "matplotlib>=3.5.0",
+    "colorcet>=2.0.0",
+    "scanpy>=1.8.0",
+    "scikit-learn>=1.0.0",
+    "joblib>=1.1.0",
+    "natsort>=8.0.0",
+    "tqdm>=4.60.0",
+    "pyyaml>=6.0",
+    "tensorflow==2.19.0",
+    "bin2cell>=0.3.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0"
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+    "myst-parser>=0.18.0"
+]
+extra = [
+    "seaborn>=0.11.0",
+    "plotly>=5.0.0",
+    "kaleido>=0.2.1"
+]
+all = [
+    "pytest>=6.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+    "myst-parser>=0.18.0",
+    "seaborn>=0.11.0",
+    "plotly>=5.0.0",
+    "kaleido>=0.2.1"
+]
+
+[project.urls]
+Homepage = "https://github.com/Xinyan-C/Spatialcell"
+Documentation = "https://github.com/Xinyan-C/Spatialcell#readme"
+Repository = "https://github.com/Xinyan-C/Spatialcell"
+"Bug Reports" = "https://github.com/Xinyan-C/Spatialcell/issues"
+"Source Code" = "https://github.com/Xinyan-C/Spatialcell"
+"Changelog" = "https://github.com/Xinyan-C/Spatialcell/releases"
+
+[project.scripts]
+spatialcell = "spatialcell.workflows.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["spatialcell*"]
+
+[tool.setuptools.package-data]
+"spatialcell.qupath_scripts" = ["*.groovy"]
+"spatialcell" = ["examples/*.py", "examples/*.yml"]
+
+# 开发工具配置
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist"
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
