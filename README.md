@@ -1,4 +1,4 @@
-# SpatialCell: Visium HD Cell Segmentation and Annotation Pipeline
+# SpatialCell: Spatial Cell Segmentation and Annotation Pipeline
 <div width="100%">
 <img src="https://raw.githubusercontent.com/Xinyan-C/Spatialcell/main/SpatialCell.png" alt="SpatialCell" width="100%"/>
 </div>
@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![GitHub issues](https://img.shields.io/github/issues/Xinyan-C/Spatialcell)](https://github.com/Xinyan-C/Spatialcell/issues)
 
-**SpatialCell** is an integrated computational pipeline for spatial transcriptomics analysis that combines cell segmentation and automated cell type annotation. It seamlessly integrates **Stardist (applied as QuPath plugin for cell detection)** for histological image analysis, **Bin2cell** for spatial cell segmentation, and **TopAct** for machine learning-based cell classification.
+**SpatialCell** is an integrated computational pipeline for Visium HD spatial transcriptomics analysis that combines cell segmentation and automated cell type annotation. It seamlessly integrates **Stardist (applied as QuPath plugin for cell detection)** for histological image analysis, **Bin2cell** for spatial cell segmentation, and **TopAct** for machine learning-based cell classification.
 
 ## 🚀 Key Features
 
