@@ -1,4 +1,4 @@
-# SpatialCell: Integrated Spatial Transcriptomics Analysis Pipeline
+# SpatialCell: Visium HD Cell Segmentation and Annotation Pipeline
 <div width="100%">
 <img src="https://raw.githubusercontent.com/Xinyan-C/Spatialcell/main/SpatialCell.png" alt="SpatialCell" width="100%"/>
 </div>
