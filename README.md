@@ -1,6 +1,10 @@
 # SpatialCell: Integrated Spatial Transcriptomics Analysis Pipeline
 
-[![SpatialCell](https://raw.githubusercontent.com/Xinyan-C/Spatialcell/main/SpatialCell.png)](https://github.com/Xinyan-C/Spatialcell)
+<div align="center">
+  <a href="https://github.com/Xinyan-C/Spatialcell">
+    <img src="https://raw.githubusercontent.com/Xinyan-C/Spatialcell/main/SpatialCell.png" alt="SpatialCell" width="100%">
+  </a>
+</div>
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
